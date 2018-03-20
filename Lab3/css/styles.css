@@ -1,0 +1,213 @@
+body {
+	font-family: Helvetica, sans-serif;
+	font-size: 14px;
+	margin: 0;
+	padding: 0;
+	background-color: #E6E6E6;
+}
+
+/* From Bootstrap documentation */
+.no-gutters {
+  margin-right: 0;
+  margin-left: 0;
+
+  > .col,
+  > [class*="col-"] {
+    padding-right: 0;
+    padding-left: 0;
+  }
+}
+
+.orange{
+	color: #F26922;
+	font-weight: 600;
+}
+
+.header {
+	padding-left: 0px;
+	padding-right: 0px;
+}
+
+.logo {
+	width: 135px;
+	background-color: #F26922;
+}
+
+.logo img {
+  display: inline;
+  width: 120px;
+  height: 120px;
+  float: right;
+}
+
+.home-logo {
+  width: 500px;
+  height: 500px;
+}
+
+.home-text{
+	color: white;
+	font-size: 30px;
+}
+
+.home-left {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	text-align: center;
+}
+
+.headtext {
+	background-color: #F26922;
+	height: 120px;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+}
+
+.headtext h1 {
+	color: white;
+	display: inline-block;
+	margin-left: 30px;
+}
+
+#slogan{
+	color: white;
+	display: block;
+	margin-left: 30px;
+}
+
+.footer{
+	height: 40px;
+	padding-left: 0px;
+	padding-right: 0px;
+	background-color: #F26922;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	text-align: right;
+}
+
+#copyright{
+	color: white;
+	display: block;
+	margin-right: 30px;
+}
+
+ul#menu{
+	font-size: 14px;
+	list-style: none;
+	padding: 0;
+	margin: 0;
+	overflow: hidden;
+}
+
+ul#menu li{
+	padding-left: 20px;
+	padding-right: 20px;
+	padding-top: 15px;
+	padding-bottom: 15px;
+	float: left;
+}
+
+ul#menu li:hover, #menu li.selected {
+	background-color: #F26922;
+	color: white;
+	cursor: pointer;
+}
+
+ul#comments{
+	list-style: none;
+	margin: 0;
+	padding: 10px;
+	padding-top: 0;
+}
+ul#comments li {
+	padding-top: 5px;
+	padding-bottom: 5px;
+}
+
+.hiddenElements{
+	display: none;
+}
+
+.home {
+	border: 0px;
+	margin-bottom: 5px;
+	margin-left: 5px;
+	margin-right: 5px;
+	padding-top: 20px;
+	padding-bottom: 20px;
+	padding-left: 35px;
+	padding-right: 35px;
+	background-color: #F26922;
+	overflow: hidden;
+}
+
+.form {
+	border: 0px;
+	margin-bottom: 5px;
+	margin-left: 5px;
+	margin-right: 5px;
+	padding-top: 20px;
+	padding-bottom: 20px;
+	padding-left: 35px;
+	padding-right: 35px;
+	background-color: #FFFFFF;
+}
+
+/* From Bootstrap community, customized by me */
+.form-control:focus {
+  border-color: #F26922;
+  box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 10px rgba(242, 105, 34, 0.6);
+}
+.btn-mrburger{
+  color: white;
+  background-color:#F26922;
+  border-color:#F26922;
+}
+.btn-mrburger:focus{
+	box-shadow: none;
+}
+.btn-mrburger:hover{
+  color: white;
+  background-color:#dd540d;
+  border-color:#dd540d;
+  box-shadow: none !important;
+}
+.btn-mrburger:active, .btn-mrburger.active, .btn-mrburger:active:focus{
+  color: white;
+  background-color: #c34a0b !important;
+  box-shadow: none !important;
+  border-color:#c34a0b !important;
+}
+
+.btn-reset{
+  color: white;
+  background-color:#b8b8b8;
+  border-color:#b8b8b8;
+}
+.btn-reset:focus{
+	box-shadow: none;
+}
+.btn-reset:hover{
+  color: white;
+  background-color:#9c9c9c;
+  border-color:#9c9c9c;
+  box-shadow: none !important;
+}
+.btn-reset:active, .btn-reset.active, .btn-reset:active:focus{
+  color: white;
+  background-color: #8a8a8a !important;
+  box-shadow: none !important;
+  border-color: #8a8a8a !important;
+}
+
+/* From Bootstrap community */
+.input-xs {
+  height: 22px;
+  padding: 2px 5px;
+  font-size: 12px;
+  line-height: 1.5; /* If Placeholder of the input is moved up, rem/modify this. */
+  border-radius: 3px;
+}

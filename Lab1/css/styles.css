@@ -1,0 +1,59 @@
+.orange{
+	color: darkorange;
+	font-style: italic;
+	font-weight: bold;
+}
+
+.gray{
+	color: gray;
+}
+
+.logo {
+	float: left;
+	
+}
+
+.logo img {
+  position: relative;
+  width: 100px;
+  height: 100px;
+  margin-left: 50px;
+}
+
+.headtext {
+	text-align: center;
+}
+
+.header h1 {
+	color: gray;
+  position: relative;
+  top: 18px;
+}
+
+.form {
+	display: block;
+	text-align: center;
+	background-color: #F2F2F2;
+}
+
+fieldset {
+	text-align: center;
+	display: inline;
+	margin: auto;
+}
+
+.tops li {
+	display: block;
+	float: left;
+	width: 25%;
+}
+
+.sauces li {
+	display: block;
+	float: left;
+	width: 25%;
+}
+
+#bttn input {
+	color: darkorange;
+}

@@ -1,0 +1,141 @@
+<html>
+<head>
+     <title>Order Form</title>
+	 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+	 <link rel="stylesheet" type="text/css" href="css/styles.css">
+     <meta charset = "UTF-8"/>
+	 
+	 <div class="header container-fluid">
+		<div class="row no-gutters">
+			<div class="col-auto logo">
+				<img src="img/logo.png" /> </div>
+			<div class="col headtext">
+				<h1>Welcome to Mr. Burger!</h1>
+					<div id="slogan"></div>
+			</div>
+		</div>
+	</div>
+</head>
+<body>
+	<ul id="menu">
+		<li onclick="location.href='index.html';"> Home </li>
+		<li onclick="location.href='orderForm.html';" class="selected"> Order Now </li>
+		<li onclick="location.href='leaveComment.html';"> Leave a Comment </li>
+	</ul>
+	<div class="form">
+		<div id="orderInfo" class="alert alert-success hiddenElements" role="alert">
+			<h5 class="alert-heading">Item added to the cart!</h5>
+			<label for="orderList">Order Details:</label>
+			<ul id="orderList">
+				<li><span id="confSize">a</span> <span id="confBread">b</span> <span id="confBurger">c</span> <span id="confFries"></span></li>
+				<li id="confCondim">Condiments:</li>
+				<li id="confTop">Additional Toppings:</li>
+				<li id="confSauce">Sauces:</li>
+				<li>Quantity: <span id="confQuantity"></span></li>
+			</ul>
+		</div>
+		
+		<h3>Place your order</h3>
+		<div class="form-group">
+			<label for="selectBurger">Burger</label>
+			<select class="form-control form-control-sm" id="selectBurger" aria-describedby="burgerError">
+				<option selected disabled hidden value="0">Choose...</option>
+			</select>
+			<small id="burgerError" class="form-text text-danger hiddenElements">Please choose a burger.</small>
+		</div>
+		
+		<div class="form-group">
+			<label for="selectBread">Type of bread</label>
+			<select class="form-control form-control-sm" id="selectBread" aria-describedby="breadError">
+				<option selected disabled hidden value="0">Choose...</option>
+			</select>
+			<small id="breadError" class="form-text text-danger hiddenElements">Please choose a bread.</small>
+		</div>
+		
+		<div class="form-group">
+			<label for="selectSize">Size</label>
+			<select class="form-control form-control-sm" id="selectSize" aria-describedby="sizeError">
+				<option selected disabled hidden value="0">Choose...</option>
+			</select>
+			<small id="sizeError" class="form-text text-danger hiddenElements">Please choose a size.</small>
+		</div>
+		
+		<div id="condimList" class="form-group">
+			<label for="selectCondim">Condiments</label>
+			<div id="selectCondim" class="form-check">
+			  <input class="form-check-input" type="checkbox" value="" id="checkMayo">
+			  <label class="form-check-label" for="checkMayo">
+				Mayonnaisse
+			  </label>
+			</div>
+			<div class="form-check">
+			  <input class="form-check-input" type="checkbox" value="" id="checkKetchup">
+			  <label class="form-check-label" for="checkKetchup">
+				Ketchup
+			  </label>
+			</div>
+			<div class="form-check">
+			  <input class="form-check-input" type="checkbox" value="" id="checkMustard">
+			  <label class="form-check-label" for="checkMustard">
+				Mustard
+			  </label>
+			</div>
+		</div>
+		
+		<div id="topList" class="form-group">
+			<label for="selectTop">Additional Toppings</label>
+			<div class="row" id="selectTop">
+				<div class="col">				
+				</div>
+				<div class="col">
+				</div>
+			</div>
+		</div>
+		
+		<div id="sauceList" class="form-group">
+			<label for="selectSauce">Sauces</label>
+			<div class="row" id="selectSauce">
+				<div class="col">
+				</div>
+				<div class="col">
+				</div>
+			</div>
+		</div>
+		
+		<div class="form-group">
+			<label for="selectFries">Fries</label>
+			<div id="selectFries" class="form-check" aria-describedby="friesError">
+			  <input class="form-check-input" type="radio" name="selectFries" value="yes" id="yesFries">
+			  <label class="form-check-label" for="yesFries">
+				Yes
+			  </label>
+			</div>
+			<div class="form-check">
+			  <input class="form-check-input" type="radio" name="selectFries" value="no" id="noFries">
+			  <label class="form-check-label" for="noFries">
+				No
+			  </label>
+			</div>
+			<small id="friesError" class="form-text text-danger hiddenElements">Please state your preference.</small>
+		</div>
+		
+		<div class="form-group">
+			<label for="quantityOrder">Quantity</label>
+			<input type="number" min="1" class="form-control form-control-sm" id="quantityOrder" aria-describedby="quantityError" placeholder="#">
+			<small id="quantityError" class="form-text text-danger hiddenElements">Please write a valid number.</small>
+		</div>
+		
+		<div class="form-group">
+		<button id="addCart" type="button" class="btn btn-primary btn-sm btn-mrburger">ADD TO CART</button>
+		<button id="resetOrder" type="button" class="btn btn-primary btn-sm btn-reset">RESET ORDER</button>
+		</div>
+	</div>
+	<script src="JS/jQuery.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+	<script type="text/javascript" src="js/orderForm.js"></script>
+</body>
+<footer class="footer">
+	<div id="copyright"></div>
+</footer>
+</html>
