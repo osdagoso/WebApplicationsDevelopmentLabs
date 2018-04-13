@@ -11,26 +11,6 @@
 		else
 			return $conn;
 	}
-	// TO BE REPLACED
-	function dbLogin($uName, $uPassword) {
-		$connection = connectToDB();
-		
-		if ($connection != null) {
-			$sql = "SELECT * 
-					FROM Users 
-					WHERE username = '$uName' AND pass = '$uPassword'";
-		
-			$resultDB = $connection->query($sql);
-
-			if ($resultDB->num_rows > 0){
-				while ($row = $resultDB->fetch_assoc())
-					$response = array("firstname"=>$row["fname"], "lastname"=>$row["lname"], "email"=>$row["email"], "status"=>"SUCCESS");
-				return $response;
-			} else
-				return array("status" => "406");
-		} else
-			return array("status" => "500");
-	}
 	
 	function dbGetUserInfo($uName) {
 		$connection = connectToDB();

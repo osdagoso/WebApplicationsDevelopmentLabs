@@ -66,17 +66,20 @@
 		$uPassword = $_POST["uPassword"];
 		$uRemember = $_POST["uRemember"];
 		
-		$result = dbLogin($uName, $uPassword);
+		$result = dbGetUserInfo($uName);
 		
 		if ($result["status"] == "SUCCESS") {
-			if ($uRemember == "true")
-				setcookie("username", $uName, time()+86400*20, "/", "", 0);
-			session_start();
-			$_SESSION["username"] = $uName;
-			$_SESSION["firstname"] = $result["firstname"];
-			$_SESSION["lastname"] = $result["lastname"];
-			$_SESSION["email"] = $result["email"];
-			echo json_encode($result);
+			if (password_verify ($uPassword, $result["pass"])) {
+				if ($uRemember == "true")
+					setcookie("username", $uName, time()+86400*20, "/", "", 0);
+				session_start();
+				$_SESSION["username"] = $uName;
+				$_SESSION["firstname"] = $result["firstname"];
+				$_SESSION["lastname"] = $result["lastname"];
+				$_SESSION["email"] = $result["email"];
+				echo json_encode($result);
+			} else
+				errorHandling('413');
 		} else
 			errorHandling($result["status"]);
 	}
@@ -163,8 +166,8 @@
 				die("The server is down, we couldn't establish the data base connection.");
 				break;
 			case '406':
-				header("HTTP/1.1 406 User not found.");
-				die("Wrong credentials provided.");
+				header("HTTP/1.1 406 Login failure.");
+				die("User not found.");
 				break;
 			case '407':
 				header("HTTP/1.1 407 Account creation failure.");
@@ -188,8 +191,12 @@
 				die("Database insertion unsuccessful.");
 				break;
 			case '412':
-				header("HTTP/1.1 407 Account creation failure.");
+				header("HTTP/1.1 412 Account creation failure.");
 				die("Password encryption unsuccessful.");
+				break;
+			case '413':
+				header("HTTP/1.1 413 Login failure.");
+				die("Wrong credentials provided.");
 				break;
 			default:
 				header("HTTP/1.1 500 Something went wrong");
