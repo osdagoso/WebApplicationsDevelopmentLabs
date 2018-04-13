@@ -63,13 +63,12 @@
 	
 	function attemptLogin() {
 		$uName = $_POST["uName"];
-		$uPassword = $_POST["uPassword"];
 		$uRemember = $_POST["uRemember"];
 		
 		$result = dbGetUserInfo($uName);
 		
 		if ($result["status"] == "SUCCESS") {
-			if (password_verify ($uPassword, $result["pass"])) {
+			if (verifyPassword($result["pass"])) {
 				if ($uRemember == "true")
 					setcookie("username", $uName, time()+86400*20, "/", "", 0);
 				session_start();
@@ -127,36 +126,69 @@
 		$uLName = $_POST["uLName"];
 		$uEmail = $_POST["uEmail"];
 		
-		$uHash = generatePasswordHash();
+		$uPassword = encryptPassword();
 		
-		if ($uHash["status"] == "SUCCESS") {
-			$uPassword = $uHash["hash"];
-			
-			$result = dbRegister($uName, $uPassword, $uEmail, $uFName, $uLName);
-		
-			if ($result["status"] == "SUCCESS") {
-				session_start();
-				$_SESSION["username"] = $uName;
-				$_SESSION["firstname"] = $uFName;
-				$_SESSION["lastname"] = $uLName;
-				$_SESSION["email"] = $uEmail;
-				echo json_encode($result);
-			} else
-				errorHandling($result["status"]);
+		$result = dbRegister($uName, $uPassword, $uEmail, $uFName, $uLName);
+	
+		if ($result["status"] == "SUCCESS") {
+			session_start();
+			$_SESSION["username"] = $uName;
+			$_SESSION["firstname"] = $uFName;
+			$_SESSION["lastname"] = $uLName;
+			$_SESSION["email"] = $uEmail;
+			echo json_encode($result);
 		} else
 			errorHandling($result["status"]);
 	}
 	
-	function generatePasswordHash() {
+	function verifyPassword($uPassword) {
+		$uPassword = decryptPassword($uPassword);
+		
+		return $uPassword === $_POST["uPassword"];
+	}
+	
+	function decryptPassword($uPassword) {
+		$key = pack('H*', "d8eed86a977f675b08d17aec3090f03036733c97d8a4d80eb07d8cfeca8aad17");
+	    
+	    $cipher = base64_decode($uPassword);
+		
+		// Split IV and cipher text
+		$ivSize = mcrypt_get_iv_size(MCRYPT_RIJNDAEL_128, MCRYPT_MODE_CBC);
+	    $iv = substr($cipher, 0, $ivSize);
+	    $cipher = substr($cipher, $ivSize);
+
+	    $uPassword = mcrypt_decrypt(MCRYPT_RIJNDAEL_128, $key, $cipher, MCRYPT_MODE_CBC, $iv);
+	   	
+	   	$count = 0;
+	   	$uPassLength = strlen($uPassword);
+		
+		// Remove possible null characters
+	    for ($i = $uPassLength - 1; $i >= 0; $i--)
+	    	if (ord($uPassword{$i}) === 0)
+				$count++;
+
+	    $uPassword = substr($uPassword, 0,  $uPassLength - $count); 
+	    return $uPassword;
+	}
+	
+	function encryptPassword() {
 		$uPassword = $_POST["uPassword"];
 		
-		$response = password_hash($uPassword, PASSWORD_BCRYPT);
+		// Key generated at https://www.random.org/bytes/
+		$key = pack('H*', "d8eed86a977f675b08d17aec3090f03036733c97d8a4d80eb07d8cfeca8aad17");
+	    $keySize =  strlen($key);
 		
-		if ($response) {
-			return array("hash"=>$response, "status"=>'SUCCESS');
-		} else {
-			return array("status"=>'412');
-		}
+		// Random IV is created to work with CBC encoding
+	    $ivSize = mcrypt_get_iv_size(MCRYPT_RIJNDAEL_128, MCRYPT_MODE_CBC);
+	    $iv = mcrypt_create_iv($ivSize, MCRYPT_RAND);
+	    
+		// Cipher text compatible with AES is created, then has IV added as "prefix"
+	    $cipher = mcrypt_encrypt(MCRYPT_RIJNDAEL_128, $key, $uPassword, MCRYPT_MODE_CBC, $iv);
+	    $cipher = $iv . $cipher;
+		
+		$uPassword = base64_encode($cipher);
+		
+		return $uPassword;
 	}
 	
 	function errorHandling($errorCode) {
@@ -204,5 +236,4 @@
 				break;
 		}
 	}
-
 ?>
