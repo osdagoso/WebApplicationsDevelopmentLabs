@@ -120,22 +120,40 @@
 	
 	function attemptRegister() {
 		$uName = $_POST["uName"];
-		$uPassword = $_POST["uPassword"];
 		$uFName = $_POST["uFName"];
 		$uLName = $_POST["uLName"];
 		$uEmail = $_POST["uEmail"];
 		
-		$result = dbRegister($uName, $uPassword, $uEmail, $uFName, $uLName);
+		$uHash = generatePasswordHash();
 		
-		if ($result["status"] == "SUCCESS") {
-			session_start();
-			$_SESSION["username"] = $uName;
-			$_SESSION["firstname"] = $uFName;
-			$_SESSION["lastname"] = $uLName;
-			$_SESSION["email"] = $uEmail;
-			echo json_encode($result);
+		if ($uHash["status"] == "SUCCESS") {
+			$uPassword = $uHash["hash"];
+			
+			$result = dbRegister($uName, $uPassword, $uEmail, $uFName, $uLName);
+		
+			if ($result["status"] == "SUCCESS") {
+				session_start();
+				$_SESSION["username"] = $uName;
+				$_SESSION["firstname"] = $uFName;
+				$_SESSION["lastname"] = $uLName;
+				$_SESSION["email"] = $uEmail;
+				echo json_encode($result);
+			} else
+				errorHandling($result["status"]);
 		} else
 			errorHandling($result["status"]);
+	}
+	
+	function generatePasswordHash() {
+		$uPassword = $_POST["uPassword"];
+		
+		$response = password_hash($uPassword, PASSWORD_BCRYPT);
+		
+		if ($response) {
+			return array("hash"=>$response, "status"=>'SUCCESS');
+		} else {
+			return array("status"=>'412');
+		}
 	}
 	
 	function errorHandling($errorCode) {
@@ -168,6 +186,10 @@
 			case '411':
 				header("HTTP/1.1 411 Comment creation failure.");
 				die("Database insertion unsuccessful.");
+				break;
+			case '412':
+				header("HTTP/1.1 407 Account creation failure.");
+				die("Password encryption unsuccessful.");
 				break;
 			default:
 				header("HTTP/1.1 500 Something went wrong");
