@@ -13,6 +13,9 @@
 		case 'GET_COMMENTS':
 			attemptLoadComment();
 			break;
+		case 'SAVE_ORDER':
+			attemptSaveOrder();
+			break;
 		case 'REMEMBER_ME':
 			validateCookie();
 			break;
@@ -110,10 +113,31 @@
 			$result = dbSaveComment($uName, $uMessage);
 			
 			if ($result["status"] == "SUCCESS") {
-				$response = '<li><p><img src="img/user.jpg" align="left" class="comment_img"><span class="comment_name">';
-				$response = $response . $uFName . " " . $uLName . '</span> <span class="comment_email">&lt' . $uEmail . "&gt</span><br>";
-				$response = $response . $uMessage . "</p></li>";
-				echo json_encode($response);
+				echo json_encode('');
+			} else
+				errorHandling($result["status"]);
+		} else
+			errorHandling('408');
+	}
+	
+	function attemptSaveOrder() {
+		$uBurger = $_POST["uBurger"];
+		$uBread = $_POST["uBread"];
+		$uSize = $_POST["uSize"];
+		$uConds = $_POST["uConds"];
+		$uTops = $_POST["uTops"];
+		$uSauces = $_POST["uSauces"];
+		$uFries = $_POST["uFries"];
+		$uCant = $_POST["uCant"];
+		
+		session_start();
+		if(isset ($_SESSION["username"])) {
+			$uName = $_SESSION["username"];
+			
+			$result = dbSaveOrder($uName, $uBurger, $uBread, $uSize, $uConds, $uTops, $uSauces, $uFries, $uCant);
+			
+			if ($result["status"] == "SUCCESS") {
+				echo json_encode('');
 			} else
 				errorHandling($result["status"]);
 		} else
@@ -229,6 +253,10 @@
 			case '413':
 				header("HTTP/1.1 413 Login failure.");
 				die("Wrong credentials provided.");
+				break;
+			case '414':
+				header("HTTP/1.1 414 Order creation failure.");
+				die("Database insertion unsuccessful.");
 				break;
 			default:
 				header("HTTP/1.1 500 Something went wrong");

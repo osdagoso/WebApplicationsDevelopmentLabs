@@ -90,5 +90,51 @@
 		} else
 			return array("status" => "500");
 	}
+	
+	function dbSaveOrder($uName, $uBurger, $uBread, $uSize, $uConds, $uTops, $uSauces, $uFries, $uCant) {
+		$connection = connectToDB();
+		
+		if ($connection != null) {
+			$date = date("Y-m-d");
+			$sql = "INSERT INTO Orders (username, orderdate, burger, bread, bgsize, fries, quantity)
+					VALUES ('$uName', '$date', '$uBurger', '$uBread', '$uSize', '$uFries', '$uCant')";
+		
+			$resultDB = $connection->query($sql);
+			if ($resultDB) {
+				$orderid = mysqli_insert_id($connection);
+				// Conds
+				foreach($uConds as $cond) {
+					$sql = "INSERT INTO CondimentsOrders 
+						VALUES ('$orderid', '$cond')";
+			
+					$resultDB = $connection->query($sql);
+					if (!$resultDB)
+						return array("status" => "414");
+				}
+				//Tops
+				foreach($uTops as $top) {
+					$sql = "INSERT INTO ToppingsOrders 
+						VALUES ('$orderid', '$top')";
+			
+					$resultDB = $connection->query($sql);
+					if (!$resultDB)
+						return array("status" => "414");
+				}
+				//Sauces
+				foreach($uSauces as $sauce) {
+					$sql = "INSERT INTO SaucesOrders 
+						VALUES ('$orderid', '$sauce')";
+			
+					$resultDB = $connection->query($sql);
+					if (!$resultDB)
+						return array("status" => "414");
+				}
+				return array("status"=>"SUCCESS");
+				
+			} else
+				return array("status" => "414");
+		} else
+			return array("status" => "500");
+	}
 
 ?>

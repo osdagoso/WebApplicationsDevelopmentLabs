@@ -33,9 +33,9 @@
       }
     ],
     "burgerSize": {
-      "sizeS": "small",
-      "sizeM": "medium",
-      "sizeL": "large"
+      "sizeS": "Small",
+      "sizeM": "Medium",
+      "sizeL": "Large"
     },
     "toppings": [
       {

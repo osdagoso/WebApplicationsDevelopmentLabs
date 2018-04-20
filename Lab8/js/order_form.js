@@ -1,4 +1,31 @@
 $(document).ready(function(){
+	// Check if remember me cookie is active
+	var jsonToSend = {
+						"uService": 'REMEMBER_ME'								
+					 };
+	
+	$.ajax({
+		url : "data/application_layer.php",
+		type : "POST",
+		data : jsonToSend,
+		ContentType : "application/json",
+		dataType : "json",
+		success: function(dataReceived){
+			$("#name").val(dataReceived);
+		},
+		error: function(errorMessage) {
+			//alert(errorMessage.statusText);
+		}
+	});
+	
+	var top = ($(window).height() - $("#modal").height())/2;
+	var left = ($(window).width() - $("#modal").width())/2;
+	
+	$("#modal").css({
+    top: top,
+    left: left
+	});
+	
 	// Load info from JSON
 	$.ajax({
 		url: "data/mr_burger_menu.json",
@@ -73,6 +100,67 @@ $(document).ready(function(){
 		}
 	});
 	
+		$("#loginButton").on("click", function(){
+		var username = $("#name").val();
+		var passwrd = $("#pass").val();
+		var rememberMe = $('#checkRemember').is(':checked');
+
+		if (username != "" && passwrd != "") {
+			$("#nameError").addClass("hiddenElements");
+			$("#name").removeClass("is-invalid");
+			$("#passError").addClass("hiddenElements");
+			$("#pass").removeClass("is-invalid");
+			
+			var jsonToSend = {
+								"uName" : username,
+								"uPassword" : passwrd,
+								"uRemember": rememberMe,
+								"uService": 'LOGIN'								
+							 };
+
+			$.ajax({
+				url : "data/application_layer.php",
+				type : "POST",
+				data : jsonToSend,
+				ContentType : "application/json",
+				dataType : "json",
+				success : function(dataReceived){
+					$("#logoutTag").text(" " + dataReceived.firstname + " " + dataReceived.lastname + " (Logout) ");
+					$("#logoutTag").removeClass("hiddenElements");
+					$("#loginTag").addClass("hiddenElements");
+					$("#overlay").hide(400);
+					$("#modal").hide(400);
+					saveOrder();
+				},
+				error : function(errorMessage){
+					$("#loginInfo span").text(errorMessage.statusText);
+					$("#loginInfo").removeClass("hiddenElements");
+				}
+
+			});
+		} else {
+			if (username === "") {
+				$("#nameError").removeClass("hiddenElements");
+				$("#name").addClass("is-invalid");
+			} else {
+				$("#nameError").addClass("hiddenElements");
+				$("#name").removeClass("is-invalid");
+			}
+			
+			if (passwrd === "") {
+				$("#passError").removeClass("hiddenElements");
+				$("#pass").addClass("is-invalid");
+			} else {
+				$("#passError").addClass("hiddenElements");
+				$("#pass").removeClass("is-invalid");
+			}
+		}
+	});
+	
+	$("#registerButton").on("click", function(){
+		window.location.href = "register.html";
+	});
+	
 	$("#addCart").on("click", validateForm);
 	$("#resetOrder").on("click", resetForm);
 });
@@ -130,44 +218,126 @@ function validateForm() {
 	}
 	
 	if (isValid) {
-		// Fill alert text with order information
-		$("#errorInfo").addClass("hiddenElements");
-		$("#orderInfo").removeClass("hiddenElements");
-		
-		$("#confBurger").text($("#selectBurger option:selected").text());
-		$("#confBread").text($("#selectBread option:selected").text());
-		$("#confSize").text($("#selectSize option:selected").text());
-		
-		if ($("#yesFries").is(":checked")) {
-			$("#confFries").text("with Fries");
-		} else {
-			$("#confFries").text("");
-		}
-		
-		$("#confCondim").text("Condiments:");
-		$("#condimList input").each(function() {
-			if ($(this).is(":checked"))
-				$("#confCondim").append(" " + $('label[for="'+$(this).attr('id')+'"]').prop("innerText"));
+		// Check if user is logged in
+		var jsonToSend = {
+							"uService": 'CHECK_SESSION'								
+						 };
+		$.ajax({
+			url : "data/application_layer.php",
+			type : "POST",
+			data : jsonToSend,
+			ContentType : "application/json",
+			dataType : "json",
+			success: function(dataReceived) {
+				saveOrder();
+			},
+			error: function(errorMessage) {
+				$("#overlay").show(400);
+				$("#modal").show(400);
+			}
 		});
-		
-		$("#confTop").text("Additional Toppings:");
-		$("#topList input").each(function() {
-			if ($(this).is(":checked"))
-				$("#confTop").append(" " + $('label[for="'+$(this).attr('id')+'"]').prop("innerText"));
-		});
-		
-		$("#confSauce").text("Sauces:");
-		$("#sauceList input").each(function() {
-			if ($(this).is(":checked"))
-				$("#confSauce").append(" " + $('label[for="'+$(this).attr('id')+'"]').prop("innerText"));
-		});
-		
-		$("#confQuantity").text($("#quantityOrder").val());
 	}
 	else {
 		$("#orderInfo").addClass("hiddenElements");
 		$("#errorInfo").removeClass("hiddenElements");
 	}
+}
+
+function saveOrder() {
+	// Prepare info to be sent to DB
+	var orderBurger = $("#selectBurger option:selected").val();
+	console.log(orderBurger);
+	var orderBread = $("#selectBread option:selected").val();
+	console.log(orderBread);
+	var orderSize = $("#selectSize option:selected").val();
+	console.log(orderSize);
+	var orderCond = [];
+	$("#condimList input").each(function() {
+		if ($(this).is(":checked"))
+			orderCond.push($('label[for="'+$(this).attr('id')+'"]').prop("innerText"));
+	});
+	console.log(orderCond);
+	var orderTop = [];
+	$("#topList input").each(function() {
+		if ($(this).is(":checked"))
+			orderTop.push($(this).attr('id'));
+	});
+	var orderSauce = [];
+	$("#sauceList input").each(function() {
+		if ($(this).is(":checked"))
+			orderSauce.push($(this).attr('id'));
+	});
+	var orderFries = 0;
+	if ($("#yesFries").is(":checked"))
+		orderFries = 1;
+	console.log(orderFries);
+	
+	var orderCant = $("#quantityOrder").val();
+	console.log(orderCant);
+	
+	
+	var jsonToSend = {
+						"uBurger": orderBurger,
+						"uBread": orderBread,
+						"uSize": orderSize,
+						"uConds": orderCond,
+						"uTops": orderTop,
+						"uSauces": orderSauce,
+						"uFries": orderFries,
+						"uCant": orderCant,
+						"uService": 'SAVE_ORDER'
+					 };
+					 
+	$.ajax({
+		url : "data/application_layer.php",
+		type : "POST",
+		data : jsonToSend,
+		ContentType : "application/json",
+		dataType : "json",
+		success : function(dataReceived){
+			// Fill alert text with order information
+			$("#errorInfo").addClass("hiddenElements");
+			$("#orderInfo").removeClass("hiddenElements");
+			
+			$("#confBurger").text($("#selectBurger option:selected").text());
+			$("#confBread").text($("#selectBread option:selected").text());
+			$("#confSize").text($("#selectSize option:selected").text());
+			
+			if ($("#yesFries").is(":checked")) {
+				$("#confFries").text("with Fries");
+			} else {
+				$("#confFries").text("");
+			}
+			
+			$("#confCondim").text("Condiments:");
+			$("#condimList input").each(function() {
+				if ($(this).is(":checked")) {
+					$("#confCondim").append(" " + $('label[for="'+$(this).attr('id')+'"]').prop("innerText"));
+					console.log($('label[for="'+$(this).attr('id')+'"]').prop("innerText"));
+				}
+			});
+			
+			$("#confTop").text("Additional Toppings:");
+			$("#topList input").each(function() {
+				if ($(this).is(":checked"))
+					$("#confTop").append(" " + $('label[for="'+$(this).attr('id')+'"]').prop("innerText"));
+			});
+			
+			$("#confSauce").text("Sauces:");
+			$("#sauceList input").each(function() {
+				if ($(this).is(":checked"))
+					$("#confSauce").append(" " + $('label[for="'+$(this).attr('id')+'"]').prop("innerText"));
+			});
+			
+			$("#confQuantity").text($("#quantityOrder").val());
+		},
+		error : function(errorMessage){
+			console.log(errorMessage);
+			// Show alert with error text
+			$("#orderInfo").addClass("hiddenElements");
+			$("#errorInfo").removeClass("hiddenElements");
+		}
+	});
 }
 
 function resetForm() {
