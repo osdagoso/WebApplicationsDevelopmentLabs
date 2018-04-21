@@ -123,13 +123,13 @@ ul#menu li:hover, #menu li.selected {
 	float: right;
 }
 
-ul#comments{
+ul#comments, ul#orders{
 	list-style: none;
 	margin: 0;
 	padding: 10px;
 	padding-top: 0;
 }
-ul#comments li {
+ul#comments li, ul#orders li {
 	padding-top: 5px;
 	padding-bottom: 5px;
 }

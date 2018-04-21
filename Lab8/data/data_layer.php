@@ -49,6 +49,68 @@
 			return array("status" => "500");
 	}
 	
+	function dbGetOrders($uName) {
+		$connection = connectToDB();
+		
+		if ($connection != null) {
+			$sql = "SELECT *
+					FROM Orders
+					WHERE username = '$uName'";
+			
+			$resultDB = $connection->query($sql);
+			$orders = [];
+			
+			if ($resultDB->num_rows > 0) {
+				while ($row = $resultDB->fetch_assoc()) {
+					$orderid = $row["id"];
+					$order["date"] = $row["orderdate"];
+					$order["burger"] = $row["burger"];
+					$order["bread"] = $row["bread"];
+					$order["bgsize"] = $row["bgsize"];
+					$order["fries"] = $row["fries"];
+					$order["quantity"] = $row["quantity"];
+					
+					$order["conds"] = [];
+					$sql = "SELECT condiment
+							FROM CondimentsOrders
+							WHERE orderid = '$orderid'";
+					$resultDB = $connection->query($sql);
+					if ($resultDB->num_rows > 0) {
+						while ($cond = $resultDB->fetch_assoc()) {
+							$order["conds"][] = $cond["condiment"];
+						}
+					}
+					$order["tops"] = [];
+					$sql = "SELECT *
+							FROM ToppingsOrders
+							WHERE orderid = '$orderid'";
+					$resultDB = $connection->query($sql);
+					if ($resultDB->num_rows > 0) {
+						while ($top = $resultDB->fetch_assoc()) {
+							$order["tops"][] = $top["topping"];
+						}
+					}
+					
+					$order["sauces"] = [];
+					$sql = "SELECT sauce
+							FROM SaucesOrders
+							WHERE orderid = '$orderid'";
+					$resultDB = $connection->query($sql);
+					if ($resultDB->num_rows > 0) {
+						while ($sauce = $resultDB->fetch_assoc()) {
+							$order["sauces"][] = $sauce["sauce"];
+						}
+					}
+					
+					$orders[] = $order;
+				}
+				return array("orders"=>$orders, "status"=>"SUCCESS");
+			} else
+				return array("status" => "415");
+		} else
+			return array("status" => "500");
+	}
+	
 	function dbGetComments() {
 		$connection = connectToDB();
 		

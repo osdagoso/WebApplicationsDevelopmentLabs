@@ -10,6 +10,9 @@
 		case 'CHECK_SESSION':
 			validateSession();
 			break;
+		case 'GET_ORDERS':
+			attemptLoadOrder();
+			break;
 		case 'GET_COMMENTS':
 			attemptLoadComment();
 			break;
@@ -55,6 +58,19 @@
 			echo json_encode($result["comments"]);
 		else
 			errorHandling($result["status"]);
+	}
+	
+	function attemptLoadOrder() {
+		session_start();
+		if(isset($_SESSION["username"])) {
+			$result = dbGetOrders($_SESSION["username"]);
+		
+			if ($result["status"] == "SUCCESS")
+				echo json_encode($result);
+			else
+				errorHandling($result["status"]);
+		} else
+			errorHandling('408');
 	}
 	
 	function validateCookie() {
@@ -257,6 +273,10 @@
 			case '414':
 				header("HTTP/1.1 414 Order creation failure.");
 				die("Database insertion unsuccessful.");
+				break;
+			case '415':
+				header("HTTP/1.1 415 Order retrieval failure.");
+				die("No orders were found.");
 				break;
 			default:
 				header("HTTP/1.1 500 Something went wrong");
