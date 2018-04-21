@@ -123,23 +123,30 @@ ul#menu li:hover, #menu li.selected {
 	float: right;
 }
 
-ul#comments, ul#orders{
+ul#comments, ul#orders, ul.orderdets{
 	list-style: none;
 	margin: 0;
 	padding: 10px;
 	padding-top: 0;
 }
-ul#comments li, ul#orders li {
+ul.orderdets {
+	list-style: none;
+	margin: 0;
+	padding: 10px;
+	padding-top: 0;
+	padding-bottom: 0;
+}
+ul#comments li, ul#orders>li {
 	padding-top: 5px;
 	padding-bottom: 5px;
 }
 
-.comment_name {
+.comment_name, .order_number {
 	font-size: 17px;
 	font-weight: 500;
 }
 
-.comment_email {
+.comment_email, .order_date {
 	font-size: 12px;
 }
 

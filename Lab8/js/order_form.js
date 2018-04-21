@@ -238,7 +238,6 @@ function validateForm() {
 		});
 	}
 	else {
-		$("#orderInfo").addClass("hiddenElements");
 		$("#errorInfo").removeClass("hiddenElements");
 	}
 }
@@ -246,17 +245,13 @@ function validateForm() {
 function saveOrder() {
 	// Prepare info to be sent to DB
 	var orderBurger = $("#selectBurger option:selected").val();
-	console.log(orderBurger);
 	var orderBread = $("#selectBread option:selected").val();
-	console.log(orderBread);
 	var orderSize = $("#selectSize option:selected").val();
-	console.log(orderSize);
 	var orderCond = [];
 	$("#condimList input").each(function() {
 		if ($(this).is(":checked"))
 			orderCond.push($('label[for="'+$(this).attr('id')+'"]').prop("innerText"));
 	});
-	console.log(orderCond);
 	var orderTop = [];
 	$("#topList input").each(function() {
 		if ($(this).is(":checked"))
@@ -270,11 +265,8 @@ function saveOrder() {
 	var orderFries = 0;
 	if ($("#yesFries").is(":checked"))
 		orderFries = 1;
-	console.log(orderFries);
 	
 	var orderCant = $("#quantityOrder").val();
-	console.log(orderCant);
-	
 	
 	var jsonToSend = {
 						"uBurger": orderBurger,
@@ -297,51 +289,18 @@ function saveOrder() {
 		success : function(dataReceived){
 			// Fill alert text with order information
 			$("#errorInfo").addClass("hiddenElements");
-			$("#orderInfo").removeClass("hiddenElements");
 			
-			$("#confBurger").text($("#selectBurger option:selected").text());
-			$("#confBread").text($("#selectBread option:selected").text());
-			$("#confSize").text($("#selectSize option:selected").text());
-			
-			if ($("#yesFries").is(":checked")) {
-				$("#confFries").text("with Fries");
-			} else {
-				$("#confFries").text("");
-			}
-			
-			$("#confCondim").text("Condiments:");
-			$("#condimList input").each(function() {
-				if ($(this).is(":checked")) {
-					$("#confCondim").append(" " + $('label[for="'+$(this).attr('id')+'"]').prop("innerText"));
-					console.log($('label[for="'+$(this).attr('id')+'"]').prop("innerText"));
-				}
-			});
-			
-			$("#confTop").text("Additional Toppings:");
-			$("#topList input").each(function() {
-				if ($(this).is(":checked"))
-					$("#confTop").append(" " + $('label[for="'+$(this).attr('id')+'"]').prop("innerText"));
-			});
-			
-			$("#confSauce").text("Sauces:");
-			$("#sauceList input").each(function() {
-				if ($(this).is(":checked"))
-					$("#confSauce").append(" " + $('label[for="'+$(this).attr('id')+'"]').prop("innerText"));
-			});
-			
-			$("#confQuantity").text($("#quantityOrder").val());
+			window.location.href = "orderHistory.html";
 		},
 		error : function(errorMessage){
 			console.log(errorMessage);
 			// Show alert with error text
-			$("#orderInfo").addClass("hiddenElements");
 			$("#errorInfo").removeClass("hiddenElements");
 		}
 	});
 }
 
 function resetForm() {
-	$("#orderInfo").addClass("hiddenElements");
 	$("#errorInfo").addClass("hiddenElements");
 	
 	// Resetting burger select menu

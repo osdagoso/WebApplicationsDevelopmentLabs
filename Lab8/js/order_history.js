@@ -107,8 +107,6 @@ $(document).ready(function(){
 	});
 	
 	function loadOrders() {
-		console.log("LOAAAAD");
-		
 		// Load info from JSON
 		$.ajax({
 			url: "data/mr_burger_menu.json",
@@ -130,8 +128,66 @@ $(document).ready(function(){
 					ContentType : "application/json",
 					dataType : "json",
 					success: function(dataReceived) {
+						var info = '';
 						console.log(dataReceived);
-						//$("#orders").append(dataReceived);
+						dataReceived.orders.forEach((order) => {
+							info = info + '<li><div><span class="order_number">Order #' + order.id + ' </span>';
+							info = info + '<span class="order_date">'+ order.date + '</span></div>';
+							
+							infoDirectory.burgerType.forEach((burger) => {
+								if (order.burger == burger.value) {
+									info = info + '<div>'+ order.quantity + ' ' + infoDirectory.burgerSize[order.bgsize] + ' ' + burger.type;
+
+									if (order.fries == 1) {
+										info = info + ' with Fries</div>';
+									} else {
+										info = info + '</div>';
+									}
+								}
+							});
+							
+							info = info + '<ul>';
+							infoDirectory.breadType.forEach((bread) => {
+								if (order.bread == bread.value) {
+									info = info + '<li>' + bread.type + ' Bread</li>';
+								}
+							});
+							if (order.conds.length > 0) {
+								info = info + '<li>Condiments:<ul class="orderdets">';
+								order.conds.forEach((cond) => {
+									info = info + '<li>' + cond + '</li>';
+								});
+								info = info + '</ul></li>';
+							}
+							if (order.tops.length > 0) {
+								info = info + '<li>Toppings:<ul class="orderdets">';
+								order.tops.forEach((top) => {
+									infoDirectory.toppings.forEach((jtop) => {
+										if (top == jtop.value) {
+											info = info + '<li>' + jtop.topping + '</li>';
+											infoDirectory.toppings.splice(infoDirectory.toppings.indexOf(jtop));
+										}
+									});
+								});
+								info = info + '</ul></li>';
+							}
+							if (order.sauces.length > 0) {
+								info = info + '<li>Sauces:<ul class="orderdets">';
+								order.sauces.forEach((sauce) => {
+									infoDirectory.sauces.forEach((jsauce) => {
+										if (sauce == jsauce.value) {
+											info = info + '<li>' + jsauce.sauce + '</li>';
+											infoDirectory.sauces.splice(infoDirectory.sauces.indexOf(jsauce));
+										}
+									});
+								});
+								info = info + '</ul></li>';
+							}
+							info = info + "</ul>";
+							info = info + "</li>";
+							console.log(info);
+						});
+						$("#orders").append(info);
 					},
 					error: function(errorMessage) {
 						console.log(errorMessage);

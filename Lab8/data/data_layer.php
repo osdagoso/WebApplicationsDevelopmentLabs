@@ -63,6 +63,7 @@
 			if ($resultDB->num_rows > 0) {
 				while ($row = $resultDB->fetch_assoc()) {
 					$orderid = $row["id"];
+					$order["id"] = $orderid;
 					$order["date"] = $row["orderdate"];
 					$order["burger"] = $row["burger"];
 					$order["bread"] = $row["bread"];
@@ -74,9 +75,9 @@
 					$sql = "SELECT condiment
 							FROM CondimentsOrders
 							WHERE orderid = '$orderid'";
-					$resultDB = $connection->query($sql);
-					if ($resultDB->num_rows > 0) {
-						while ($cond = $resultDB->fetch_assoc()) {
+					$resultDB2 = $connection->query($sql);
+					if ($resultDB2->num_rows > 0) {
+						while ($cond = $resultDB2->fetch_assoc()) {
 							$order["conds"][] = $cond["condiment"];
 						}
 					}
@@ -84,9 +85,9 @@
 					$sql = "SELECT *
 							FROM ToppingsOrders
 							WHERE orderid = '$orderid'";
-					$resultDB = $connection->query($sql);
-					if ($resultDB->num_rows > 0) {
-						while ($top = $resultDB->fetch_assoc()) {
+					$resultDB2 = $connection->query($sql);
+					if ($resultDB2->num_rows > 0) {
+						while ($top = $resultDB2->fetch_assoc()) {
 							$order["tops"][] = $top["topping"];
 						}
 					}
@@ -95,9 +96,9 @@
 					$sql = "SELECT sauce
 							FROM SaucesOrders
 							WHERE orderid = '$orderid'";
-					$resultDB = $connection->query($sql);
-					if ($resultDB->num_rows > 0) {
-						while ($sauce = $resultDB->fetch_assoc()) {
+					$resultDB2 = $connection->query($sql);
+					if ($resultDB2->num_rows > 0) {
+						while ($sauce = $resultDB2->fetch_assoc()) {
 							$order["sauces"][] = $sauce["sauce"];
 						}
 					}
